@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `GraphicsPipeline` struct in crate `vulkano`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, GraphicsPipeline">
+
+    <title>vulkano::pipeline::GraphicsPipeline - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>pipeline</a></p><script>window.sidebarCurrent = {name: 'GraphicsPipeline', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>pipeline</a>::<wbr><a class='struct' href=''>GraphicsPipeline</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-10408' class='srclink' href='../../src/vulkano/vulkano/src/pipeline/graphics_pipeline.rs.html#32-45' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct GraphicsPipeline&lt;MultiVertex, Layout&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>The template parameter contains the descriptor set to use with this pipeline, and the
+renderpass layout.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;MV, L&gt; <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MV, L&gt; <span class='where'>where MV: <a class='trait' href='../../vulkano/pipeline/vertex/trait.MultiVertex.html' title='vulkano::pipeline::vertex::MultiVertex'>MultiVertex</a>, L: <a class='trait' href='../../vulkano/descriptor_set/trait.PipelineLayoutDesc.html' title='vulkano::descriptor_set::PipelineLayoutDesc'>PipelineLayoutDesc</a></span></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>&lt;Vi, Fo, R, Vl, Fl&gt;(device: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Device.html' title='vulkano::device::Device'>Device</a>&gt;, vertex_shader: &amp;<a class='struct' href='../../vulkano/shader/struct.VertexShaderEntryPoint.html' title='vulkano::shader::VertexShaderEntryPoint'>VertexShaderEntryPoint</a>&lt;Vi, Vl&gt;, input_assembly: &amp;<a class='struct' href='../../vulkano/pipeline/input_assembly/struct.InputAssembly.html' title='vulkano::pipeline::input_assembly::InputAssembly'>InputAssembly</a>, viewport: &amp;<a class='enum' href='../../vulkano/pipeline/viewport/enum.ViewportsState.html' title='vulkano::pipeline::viewport::ViewportsState'>ViewportsState</a>, raster: &amp;<a class='struct' href='../../vulkano/pipeline/raster/struct.Rasterization.html' title='vulkano::pipeline::raster::Rasterization'>Rasterization</a>, multisample: &amp;<a class='struct' href='../../vulkano/pipeline/multisample/struct.Multisample.html' title='vulkano::pipeline::multisample::Multisample'>Multisample</a>, blend: &amp;<a class='struct' href='../../vulkano/pipeline/blend/struct.Blend.html' title='vulkano::pipeline::blend::Blend'>Blend</a>, fragment_shader: &amp;<a class='struct' href='../../vulkano/shader/struct.FragmentShaderEntryPoint.html' title='vulkano::shader::FragmentShaderEntryPoint'>FragmentShaderEntryPoint</a>&lt;Fo, Fl&gt;, layout: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/descriptor_set/struct.PipelineLayout.html' title='vulkano::descriptor_set::PipelineLayout'>PipelineLayout</a>&lt;L&gt;&gt;, render_pass: &amp;<a class='struct' href='../../vulkano/framebuffer/struct.Subpass.html' title='vulkano::framebuffer::Subpass'>Subpass</a>&lt;R&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MV, L&gt;&gt;, <a class='enum' href='../../vulkano/enum.OomError.html' title='vulkano::OomError'>OomError</a>&gt;</code></h4>
+<div class='docblock'><p>Builds a new graphics pipeline object.</p>
+
+<h1 id='panic' class='section-header'><a href='#panic'>Panic</a></h1>
+<ul>
+<li>Panicks if primitive restart is enabled and the topology doesn&#39;t support this feature.</li>
+<li>Panicks if the <code>rasterization_samples</code> parameter of <code>multisample</code> is not &gt;= 1.</li>
+<li>Panicks if the <code>sample_shading</code> parameter of <code>multisample</code> is not between 0.0 and 1.0.</li>
+<li>Panicks if the line width is different from 1.0 and the <code>wide_lines</code> feature is not enabled.</li>
+</ul>
+</div></div><h3 class='impl'><code>impl&lt;MV, L&gt; <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MV, L&gt; <span class='where'>where MV: <a class='trait' href='../../vulkano/pipeline/vertex/trait.MultiVertex.html' title='vulkano::pipeline::vertex::MultiVertex'>MultiVertex</a>, L: <a class='trait' href='../../vulkano/descriptor_set/trait.PipelineLayoutDesc.html' title='vulkano::descriptor_set::PipelineLayoutDesc'>PipelineLayoutDesc</a></span></code></h3><div class='impl-items'><h4 id='method.layout' class='method'><code>fn <a href='#method.layout' class='fnname'>layout</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/descriptor_set/struct.PipelineLayout.html' title='vulkano::descriptor_set::PipelineLayout'>PipelineLayout</a>&lt;L&gt;&gt;</code></h4>
+<div class='docblock'><p>Returns the pipeline layout used in the constructor.</p>
+</div></div><h3 class='impl'><code>impl&lt;MultiVertex, Layout&gt; <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MultiVertex, Layout&gt;</code></h3><div class='impl-items'><h4 id='method.has_dynamic_line_width' class='method'><code>fn <a href='#method.has_dynamic_line_width' class='fnname'>has_dynamic_line_width</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns true if the line width used by this pipeline is dynamic.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;MultiVertex, Layout&gt; <a class='trait' href='../../vulkano/pipeline/trait.GenericPipeline.html' title='vulkano::pipeline::GenericPipeline'>GenericPipeline</a> for <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MultiVertex, Layout&gt;</code></h3><div class='impl-items'></div><h3 class='impl'><code>impl&lt;MultiVertex, Layout&gt; <a class='trait' href='../../vulkano/trait.VulkanObject.html' title='vulkano::VulkanObject'>VulkanObject</a> for <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MultiVertex, Layout&gt;</code></h3><div class='impl-items'><h4 id='associatedtype.Object' class='type'><code>type Object = Pipeline</code></h4>
+<h4 id='method.internal_object' class='method'><code>fn <a href='../../vulkano/trait.VulkanObject.html#method.internal_object' class='fnname'>internal_object</a>(&amp;self) -&gt; Pipeline</code></h4>
+</div><h3 class='impl'><code>impl&lt;MultiVertex, Layout&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../../vulkano/pipeline/struct.GraphicsPipeline.html' title='vulkano::pipeline::GraphicsPipeline'>GraphicsPipeline</a>&lt;MultiVertex, Layout&gt;</code></h3><div class='impl-items'><h4 id='method.drop' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#method.drop' class='fnname'>drop</a>(&amp;mut self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vulkano";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

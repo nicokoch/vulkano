@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Subpass` struct in crate `vulkano`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Subpass">
+
+    <title>vulkano::framebuffer::Subpass - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>framebuffer</a></p><script>window.sidebarCurrent = {name: 'Subpass', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>framebuffer</a>::<wbr><a class='struct' href=''>Subpass</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-8453' class='srclink' href='../../src/vulkano/vulkano/src/framebuffer.rs.html#706-709' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Subpass&lt;'a, L: 'a&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>Represents a subpass within a <code>RenderPass</code>.</p>
+
+<p>This struct doesn&#39;t correspond to anything in Vulkan. It is simply an equivalent to a
+combination of a render pass and subpass ID.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'a, L: 'a&gt; <a class='struct' href='../../vulkano/framebuffer/struct.Subpass.html' title='vulkano::framebuffer::Subpass'>Subpass</a>&lt;'a, L&gt;</code></h3><div class='impl-items'><h4 id='method.renderpass' class='method'><code>fn <a href='#method.renderpass' class='fnname'>renderpass</a>(&amp;self) -&gt; &amp;'a <a class='struct' href='../../vulkano/framebuffer/struct.RenderPass.html' title='vulkano::framebuffer::RenderPass'>RenderPass</a>&lt;L&gt;</code></h4>
+<div class='docblock'><p>Returns the renderpass of this subpass.</p>
+</div><h4 id='method.index' class='method'><code>fn <a href='#method.index' class='fnname'>index</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a></code></h4>
+<div class='docblock'><p>Returns the index of this subpass within the renderpass.</p>
+</div><h4 id='method.has_color_or_depth_stencil_attachment' class='method'><code>fn <a href='#method.has_color_or_depth_stencil_attachment' class='fnname'>has_color_or_depth_stencil_attachment</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns true if the subpass has any color or depth/stencil attachment.</p>
+</div><h4 id='method.num_samples' class='method'><code>fn <a href='#method.num_samples' class='fnname'>num_samples</a>(&amp;self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>&gt;</code></h4>
+<div class='docblock'><p>Returns the number of samples in the color and/or depth/stencil attachments. Returns <code>None</code>
+if there is no such attachment in this subpass.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl&lt;'a, L: <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + 'a&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../vulkano/framebuffer/struct.Subpass.html' title='vulkano::framebuffer::Subpass'>Subpass</a>&lt;'a, L&gt;</code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../vulkano/framebuffer/struct.Subpass.html' title='vulkano::framebuffer::Subpass'>Subpass</a>&lt;'a, L&gt;</code></h4>
+<h4 id='method.clone_from' class='method'><span class="since">1.0.0</span><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl&lt;'a, L: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> + 'a&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='struct' href='../../vulkano/framebuffer/struct.Subpass.html' title='vulkano::framebuffer::Subpass'>Subpass</a>&lt;'a, L&gt;</code></h3><div class='impl-items'></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vulkano";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DeviceMemory","Represents memory that has been allocated."],["MappedDeviceMemory","Represents memory that has been allocated and mapped in CPU accessible space."]]});

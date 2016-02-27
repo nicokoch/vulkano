@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["EmptyPipelineDesc","Implementation of `PipelineLayoutDesc` that describes an empty pipeline."],["RuntimeDesc","FIXME: it should be unsafe to create this struct"],["RuntimeDescriptorSetDesc","FIXME: should be unsafe to create this struct"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["GraphicsPipeline","The template parameter contains the descriptor set to use with this pipeline, and the renderpass layout."]]});

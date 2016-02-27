@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Version","Represents an API version of Vulkan."]]});

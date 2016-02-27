@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Buffer` struct in crate `vulkano`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Buffer">
+
+    <title>vulkano::buffer::Buffer - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>buffer</a></p><script>window.sidebarCurrent = {name: 'Buffer', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>vulkano</a>::<wbr><a href='index.html'>buffer</a>::<wbr><a class='struct' href=''>Buffer</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-648' class='srclink' href='../../src/vulkano/vulkano/src/buffer.rs.html#90-93' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Buffer&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; {
+    // some fields omitted
+}</pre><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;T, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.MemorySourceChunk.html' title='vulkano::memory::MemorySourceChunk'>MemorySourceChunk</a></span></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>&lt;S, Sh&gt;(device: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Device.html' title='vulkano::device::Device'>Device</a>&gt;, usage: &amp;<a class='struct' href='../../vulkano/buffer/struct.Usage.html' title='vulkano::buffer::Usage'>Usage</a>, memory: S, sharing: Sh) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt;&gt;, <a class='enum' href='../../vulkano/enum.OomError.html' title='vulkano::OomError'>OomError</a>&gt; <span class='where'>where S: <a class='trait' href='../../vulkano/memory/trait.MemorySource.html' title='vulkano::memory::MemorySource'>MemorySource</a>&lt;Chunk=M&gt;, Sh: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='enum' href='../../vulkano/sync/enum.SharingMode.html' title='vulkano::sync::SharingMode'>SharingMode</a>&gt;</span></code></h4>
+<div class='docblock'><p>Creates a new buffer.</p>
+</div></div><h3 class='impl'><code>impl&lt;T, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>[</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.MemorySourceChunk.html' title='vulkano::memory::MemorySourceChunk'>MemorySourceChunk</a></span></code></h3><div class='impl-items'><h4 id='method.array' class='method'><code>fn <a href='#method.array' class='fnname'>array</a>&lt;S, Sh&gt;(device: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Device.html' title='vulkano::device::Device'>Device</a>&gt;, len: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, usage: &amp;<a class='struct' href='../../vulkano/buffer/struct.Usage.html' title='vulkano::buffer::Usage'>Usage</a>, memory: S, sharing: Sh) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>[</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, M&gt;&gt;, <a class='enum' href='../../vulkano/enum.OomError.html' title='vulkano::OomError'>OomError</a>&gt; <span class='where'>where S: <a class='trait' href='../../vulkano/memory/trait.MemorySource.html' title='vulkano::memory::MemorySource'>MemorySource</a>&lt;Chunk=M&gt;, Sh: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='enum' href='../../vulkano/sync/enum.SharingMode.html' title='vulkano::sync::SharingMode'>SharingMode</a>&gt;</span></code></h4>
+<div class='docblock'><p>Creates a new buffer with a number of elements.</p>
+</div></div><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.MemorySourceChunk.html' title='vulkano::memory::MemorySourceChunk'>MemorySourceChunk</a></span></code></h3><div class='impl-items'><h4 id='method.raw' class='method'><code>unsafe fn <a href='#method.raw' class='fnname'>raw</a>&lt;S, Sh&gt;(device: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Device.html' title='vulkano::device::Device'>Device</a>&gt;, size: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, usage: &amp;<a class='struct' href='../../vulkano/buffer/struct.Usage.html' title='vulkano::buffer::Usage'>Usage</a>, memory: S, sharing: Sh) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt;&gt;, <a class='enum' href='../../vulkano/enum.OomError.html' title='vulkano::OomError'>OomError</a>&gt; <span class='where'>where S: <a class='trait' href='../../vulkano/memory/trait.MemorySource.html' title='vulkano::memory::MemorySource'>MemorySource</a>&lt;Chunk=M&gt;, Sh: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='enum' href='../../vulkano/sync/enum.SharingMode.html' title='vulkano::sync::SharingMode'>SharingMode</a>&gt;</span></code></h4>
+<div class='docblock'><p>Creates a new buffer of the given size without checking whether the type is correct.</p>
+
+<h1 id='safety' class='section-header'><a href='#safety'>Safety</a></h1>
+<ul>
+<li>Type safety is not checked.</li>
+</ul>
+</div></div><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt;</code></h3><div class='impl-items'><h4 id='method.device' class='method'><code>fn <a href='#method.device' class='fnname'>device</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Device.html' title='vulkano::device::Device'>Device</a>&gt;</code></h4>
+<div class='docblock'><p>Returns the device used to create this buffer.</p>
+</div><h4 id='method.size' class='method'><code>fn <a href='#method.size' class='fnname'>size</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<div class='docblock'><p>Returns the size of the buffer in bytes.</p>
+</div></div><h3 class='impl'><code>impl&lt;T, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>[</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, M&gt;</code></h3><div class='impl-items'><h4 id='method.len' class='method'><code>fn <a href='#method.len' class='fnname'>len</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<div class='docblock'><p>Returns the number of elements in the buffer.</p>
+</div></div><h3 class='impl'><code>impl&lt;'a, T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.CpuAccessible.html' title='vulkano::memory::CpuAccessible'>CpuAccessible</a>&lt;'a, T&gt;</span></code></h3><div class='impl-items'><h4 id='method.read' class='method'><code>fn <a href='#method.read' class='fnname'>read</a>(&amp;'a self, timeout_ns: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; M::Read</code></h4>
+<div class='docblock'><p>Gives a read access to the content of the buffer.</p>
+
+<p>If the buffer is in use by the GPU, blocks until it is available.</p>
+</div><h4 id='method.try_read' class='method'><code>fn <a href='#method.try_read' class='fnname'>try_read</a>(&amp;'a self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;M::Read&gt;</code></h4>
+<div class='docblock'><p>Tries to give a read access to the content of the buffer.</p>
+
+<p>If the buffer is in use by the GPU, returns <code>None</code>.</p>
+</div></div><h3 class='impl'><code>impl&lt;'a, T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.CpuWriteAccessible.html' title='vulkano::memory::CpuWriteAccessible'>CpuWriteAccessible</a>&lt;'a, T&gt;</span></code></h3><div class='impl-items'><h4 id='method.write' class='method'><code>fn <a href='#method.write' class='fnname'>write</a>(&amp;'a self, timeout_ns: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; M::Write</code></h4>
+<div class='docblock'><p>Gives a write access to the content of the buffer.</p>
+
+<p>If the buffer is in use by the GPU, blocks until it is available.</p>
+</div><h4 id='method.try_write' class='method'><code>fn <a href='#method.try_write' class='fnname'>try_write</a>(&amp;'a self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;M::Write&gt;</code></h4>
+<div class='docblock'><p>Tries to give a write access to the content of the buffer.</p>
+
+<p>If the buffer is in use by the GPU, returns <code>None</code>.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='../../vulkano/sync/trait.Resource.html' title='vulkano::sync::Resource'>Resource</a> for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.MemorySourceChunk.html' title='vulkano::memory::MemorySourceChunk'>MemorySourceChunk</a></span></code></h3><div class='impl-items'><h4 id='method.requires_fence' class='method'><code>fn <a href='../../vulkano/sync/trait.Resource.html#method.requires_fence' class='fnname'>requires_fence</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.requires_semaphore' class='method'><code>fn <a href='../../vulkano/sync/trait.Resource.html#method.requires_semaphore' class='fnname'>requires_semaphore</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.sharing_mode' class='method'><code>fn <a href='../../vulkano/sync/trait.Resource.html#method.sharing_mode' class='fnname'>sharing_mode</a>(&amp;self) -&gt; &amp;<a class='enum' href='../../vulkano/sync/enum.SharingMode.html' title='vulkano::sync::SharingMode'>SharingMode</a></code></h4>
+</div><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='../../vulkano/buffer/trait.AbstractBuffer.html' title='vulkano::buffer::AbstractBuffer'>AbstractBuffer</a> for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.MemorySourceChunk.html' title='vulkano::memory::MemorySourceChunk'>MemorySourceChunk</a></span></code></h3><div class='impl-items'><h4 id='method.size-1' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.size' class='fnname'>size</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<h4 id='method.gpu_access' class='method'><code>unsafe fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.gpu_access' class='fnname'>gpu_access</a>(&amp;self, write: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>, offset: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, size: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, queue: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/device/struct.Queue.html' title='vulkano::device::Queue'>Queue</a>&gt;, fence: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/sync/struct.Fence.html' title='vulkano::sync::Fence'>Fence</a>&gt;&gt;, semaphore: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/sync/struct.Semaphore.html' title='vulkano::sync::Semaphore'>Semaphore</a>&gt;&gt;) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/alloc/arc/struct.Arc.html' title='alloc::arc::Arc'>Arc</a>&lt;<a class='struct' href='../../vulkano/sync/struct.Semaphore.html' title='vulkano::sync::Semaphore'>Semaphore</a>&gt;&gt;</code></h4>
+<h4 id='method.usage_transfer_src' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_transfer_src' class='fnname'>usage_transfer_src</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_transfer_dest' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_transfer_dest' class='fnname'>usage_transfer_dest</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_uniform_texel_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_uniform_texel_buffer' class='fnname'>usage_uniform_texel_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_storage_texel_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_storage_texel_buffer' class='fnname'>usage_storage_texel_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_uniform_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_uniform_buffer' class='fnname'>usage_uniform_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_storage_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_storage_buffer' class='fnname'>usage_storage_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_index_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_index_buffer' class='fnname'>usage_index_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_vertex_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_vertex_buffer' class='fnname'>usage_vertex_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.usage_indirect_buffer' class='method'><code>fn <a href='../../vulkano/buffer/trait.AbstractBuffer.html#method.usage_indirect_buffer' class='fnname'>usage_indirect_buffer</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><code>impl&lt;'a, T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='../../vulkano/memory/trait.CpuAccessible.html' title='vulkano::memory::CpuAccessible'>CpuAccessible</a>&lt;'a, T&gt; for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.CpuAccessible.html' title='vulkano::memory::CpuAccessible'>CpuAccessible</a>&lt;'a, T&gt;</span></code></h3><div class='impl-items'><h4 id='associatedtype.Read' class='type'><code>type Read = M::Read</code></h4>
+<h4 id='method.read-1' class='method'><code>fn <a href='../../vulkano/memory/trait.CpuAccessible.html#method.read' class='fnname'>read</a>(&amp;'a self, timeout_ns: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; M::Read</code></h4>
+<h4 id='method.try_read-1' class='method'><code>fn <a href='../../vulkano/memory/trait.CpuAccessible.html#method.try_read' class='fnname'>try_read</a>(&amp;'a self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;M::Read&gt;</code></h4>
+</div><h3 class='impl'><code>impl&lt;'a, T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='../../vulkano/memory/trait.CpuWriteAccessible.html' title='vulkano::memory::CpuWriteAccessible'>CpuWriteAccessible</a>&lt;'a, T&gt; for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt; <span class='where'>where M: <a class='trait' href='../../vulkano/memory/trait.CpuWriteAccessible.html' title='vulkano::memory::CpuWriteAccessible'>CpuWriteAccessible</a>&lt;'a, T&gt;</span></code></h3><div class='impl-items'><h4 id='associatedtype.Write' class='type'><code>type Write = M::Write</code></h4>
+<h4 id='method.write-1' class='method'><code>fn <a href='../../vulkano/memory/trait.CpuWriteAccessible.html#method.write' class='fnname'>write</a>(&amp;'a self, timeout_ns: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>) -&gt; M::Write</code></h4>
+<h4 id='method.try_write-1' class='method'><code>fn <a href='../../vulkano/memory/trait.CpuWriteAccessible.html#method.try_write' class='fnname'>try_write</a>(&amp;'a self) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;M::Write&gt;</code></h4>
+</div><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='../../vulkano/trait.VulkanObject.html' title='vulkano::VulkanObject'>VulkanObject</a> for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt;</code></h3><div class='impl-items'><h4 id='associatedtype.Object' class='type'><code>type Object = Buffer</code></h4>
+<h4 id='method.internal_object' class='method'><code>fn <a href='../../vulkano/trait.VulkanObject.html#method.internal_object' class='fnname'>internal_object</a>(&amp;self) -&gt; Buffer</code></h4>
+</div><h3 class='impl'><code>impl&lt;T: ?<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a>, M&gt; <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../../vulkano/buffer/struct.Buffer.html' title='vulkano::buffer::Buffer'>Buffer</a>&lt;T, M&gt;</code></h3><div class='impl-items'><h4 id='method.drop' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#method.drop' class='fnname'>drop</a>(&amp;mut self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vulkano";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

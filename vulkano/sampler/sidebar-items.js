@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Filter","Describes how the color of each pixel should be determined."],["MipmapMode","Describes which mipmap from the source to use."],["SamplerAddressMode",""]],"struct":[["Sampler","Describes how to retreive data from an image within a shader."]]});

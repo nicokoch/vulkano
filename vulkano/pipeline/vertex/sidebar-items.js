@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["VertexInputRate",""]],"struct":[["VertexAttribute",""]],"trait":[["Attribute",""],["MultiVertex","Trait for types that contain the layout of a collection of vertex buffers."],["Vertex","Describes an individual `Vertex`. More precisely, a collection of attributes that can be read from a vertex shader."]]});

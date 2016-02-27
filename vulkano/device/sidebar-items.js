@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["DeviceCreationError","Error that can be returned when creating a device."]],"struct":[["Device","Represents a Vulkan context."],["Queue","Represents a queue where commands can be submitted."]]});

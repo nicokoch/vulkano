@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BlendOp",""],["LogicOp","Which logical operation to apply to the output values.The operation is applied individually for each channel (red, green, blue and alpha).Only relevant for integer or unsigned attachments.Also note that some implementations don't support logic operations."]],"struct":[["Blend",""]]});

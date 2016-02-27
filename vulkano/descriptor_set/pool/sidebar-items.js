@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DescriptorPool","Pool from which descriptor sets are allocated from.A pool has a maximum number of descriptor sets and a maximum number of descriptors (one value per descriptor type) it can allocate."]]});

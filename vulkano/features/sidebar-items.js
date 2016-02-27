@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Features","Represents all the features that are available on a physical device or enabled on a logical device.Note that the `robust_buffer_access` is guaranteed to be supported by all Vulkan implementations.Example"]]});
