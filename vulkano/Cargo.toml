@@ -16,3 +16,4 @@ shared_library = "0.1.5"
 smallvec = "0.3.1"
 lazy_static = "0.2.2"
 vk-sys = { version = "0.2.5", path = "../vk-sys" }
+num-traits = "0.1"

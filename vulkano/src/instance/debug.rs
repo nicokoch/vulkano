@@ -53,6 +53,7 @@ use VulkanObject;
 use check_errors;
 use vk;
 
+
 /// Registration of a callback called by validation layers.
 ///
 /// The callback can be called as long as this object is alive.

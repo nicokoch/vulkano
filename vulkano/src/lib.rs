@@ -67,6 +67,7 @@ extern crate fnv;
 extern crate lazy_static;
 extern crate shared_library;
 extern crate smallvec;
+extern crate num_traits;
 extern crate vk_sys as vk;
 
 #[macro_use]
@@ -77,6 +78,7 @@ mod version;
 
 pub mod buffer;
 pub mod command_buffer;
+pub mod debug_marker;
 pub mod descriptor;
 pub mod device;
 pub mod format;
@@ -96,6 +98,7 @@ use std::fmt;
 use std::ops::Deref;
 use std::sync::Arc;
 use std::sync::MutexGuard;
+use num_traits::ToPrimitive;
 
 /// Alternative to the `Deref` trait. Contrary to `Deref`, must always return the same object.
 pub unsafe trait SafeDeref: Deref {}
@@ -109,7 +112,7 @@ unsafe impl<T: ?Sized> SafeDeref for Box<T> {
 /// Gives access to the internal identifier of an object.
 pub unsafe trait VulkanObject {
     /// The type of the object.
-    type Object;
+    type Object: ToPrimitive;
 
     /// Returns a reference to the object.
     fn internal_object(&self) -> Self::Object;
