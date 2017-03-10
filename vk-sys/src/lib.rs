@@ -168,6 +168,9 @@ pub const STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR: u32 = 1000009000;
 pub const STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT: u32 = 1000011000;
 pub const STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK: u32 = 1000000000 + (52 * 1000);
 pub const STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK: u32 = 1000000000 + (53 * 1000);
+pub const STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT: u32 = 1000022000;
+pub const STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT: u32 = 1000022001;
+pub const STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT: u32 = 1000022002;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR: u32 = 1000059000;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR: u32 = 1000059001;
 pub const STRUCTURE_TYPE_FORMAT_PROPERTIES_2_KHR: u32 = 1000059002;
@@ -2405,7 +2408,6 @@ pub struct AndroidSurfaceCreateInfoKHR {
     pub window: *mut c_void,
 }
 
-
 pub type Win32SurfaceCreateFlagsKHR = Flags;
 
 #[repr(C)]
@@ -2416,7 +2418,6 @@ pub struct Win32SurfaceCreateInfoKHR {
     pub hinstance: *mut c_void,
     pub hwnd: *mut c_void,
 }
-
 
 #[repr(C)]
 pub struct DebugReportCallbackCreateInfoEXT {
@@ -2470,6 +2471,31 @@ pub struct MVKSwapchainPerformance {
     pub lastFrameInterval: c_double,
     pub averageFrameInterval: c_double,
     pub averageFramesPerSecond: c_double,
+pub struct DebugMarkerObjectNameInfoEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub objectType: DebugReportObjectTypeEXT,
+    pub object: u64,
+    pub pObjectName: *const c_char,
+}
+
+#[repr(C)]
+pub struct DebugMarkerObjectTagInfoEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub objectType: DebugReportObjectTypeEXT,
+    pub object: u64,
+    pub tagName: u64,
+    pub tagSize: usize,
+    pub pTag: *const c_void,
+}
+
+#[repr(C)]
+pub struct DebugMarkerMarkerInfoEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub pMarkerName: *const c_char,
+    pub color: [f32; 4],
 }
 
 #[repr(C)]
@@ -2831,4 +2857,9 @@ ptrs!(DevicePointers, {
     DestroyDescriptorUpdateTemplateKHR => (device: Device, descriptorUpdateTemplate: DescriptorUpdateTemplateKHR, pAllocator: *const AllocationCallbacks) -> (),
     UpdateDescriptorSetWithTemplateKHR => (device: Device, descriptorSet: DescriptorSet, descriptorUpdateTemplate: DescriptorUpdateTemplateKHR, pData: *const c_void) -> (),
     CmdPushDescriptorSetWithTemplateKHR => (commandBuffer: CommandBuffer, descriptorUpdateTemplate: DescriptorUpdateTemplateKHR, layout: PipelineLayout, set: u32, pData: *const c_void) -> (),
+    DebugMarkerSetObjectTagEXT => (device: Device, pTagInfo: *mut DebugMarkerObjectTagInfoEXT) -> Result,
+    DebugMarkerSetObjectNameEXT => (device: Device, pNameInfo: *mut DebugMarkerObjectNameInfoEXT) -> Result,
+    DebugMarkerBeginEXT => (commandBuffer: CommandBuffer, pMarkerInfo: *mut DebugMarkerMarkerInfoEXT) -> (),
+    DebugMarkerEndEXT => (commandBuffer: CommandBuffer) -> (),
+    DebugMarkerInsertEXT => (commandBuffer: CommandBuffer, pMarkerInfo: *mut DebugMarkerMarkerInfoEXT) -> (),
 });
