@@ -177,6 +177,15 @@ impl DebugCallback {
     }
 }
 
+unsafe impl VulkanObject for DebugCallback {
+    type Object = vk::DebugReportCallbackEXT;
+
+    #[inline]
+    fn internal_object(&self) -> Self::Object {
+        self.debug_report_callback
+    }
+}
+
 impl Drop for DebugCallback {
     #[inline]
     fn drop(&mut self) {

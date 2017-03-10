@@ -93,6 +93,15 @@ impl<P> UnsafeQueryPool<P>
     }
 }
 
+unsafe impl VulkanObject for UnsafeQueryPool {
+    type Object = vk::QueryPool;
+
+    #[inline]
+    fn internal_object(&self) -> Self::Object {
+        self.pool
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 pub enum QueryType {
     Occlusion,
