@@ -182,6 +182,13 @@ unsafe impl VulkanObject for DeviceMemory {
     }
 }
 
+unsafe impl DeviceOwned for DeviceMemory {
+    #[inline]
+    fn device(&self) -> &Arc<Device> {
+        &self.device
+    }
+}
+
 impl Drop for DeviceMemory {
     #[inline]
     fn drop(&mut self) {
