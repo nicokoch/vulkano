@@ -9,7 +9,6 @@ use device::DeviceOwned;
 use check_errors;
 use Error;
 use VulkanObject;
-use VulkanPointers;
 use vk;
 
 // TODO Queue, DescriptorPool, Semaphore
@@ -104,7 +103,7 @@ impl From<Error> for DebugMarkerError {
     }
 }
 
-trait DebugObject: VulkanObject {
+pub trait DebugObject: VulkanObject {
     fn object_type() -> vk::DebugReportObjectTypeEXT;
 }
 
@@ -122,14 +121,12 @@ macro_rules! impl_debug_object {
 // The various implementations for `DebugObject`
 use instance::{PhysicalDevice, Instance};
 use device::Queue;
-use command_buffer::cb::UnsafeCommandBuffer;
 use memory::DeviceMemory;
 use buffer::sys::UnsafeBuffer;
 use image::sys::UnsafeImage;
 use sync::{Event, Fence, Semaphore};
 use query::UnsafeQueryPool;
 use buffer::view::BufferView;
-use buffer::Buffer;
 use image::sys::UnsafeImageView;
 use pipeline::shader::ShaderModule;
 use pipeline::cache::PipelineCache;
@@ -142,10 +139,12 @@ use descriptor::descriptor_set::DescriptorPool;
 use descriptor::descriptor_set::UnsafeDescriptorSet;
 use framebuffer::FramebufferSys;
 use command_buffer::pool::UnsafeCommandPool;
+use command_buffer::sys::UnsafeCommandBuffer;
 use swapchain::{Swapchain, Surface};
 use instance::debug::DebugCallback;
 use swapchain::display::Display;
 use swapchain::display::DisplayMode;
+use buffer::BufferAccess;
 
 impl_debug_object!(Instance, vk::DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT);
 //impl_debug_object!(Queue, vk::DEBUG_REPORT_OBJECT_TYPE_QUEUE_EXT); TODO SynchronizedVulkanObject
@@ -189,7 +188,7 @@ impl<P: CommandPool> DebugObject for UnsafeCommandBuffer<P> {
     }
 }
 
-impl<F, B: Buffer> DebugObject for BufferView<F, B> {
+impl<F, B: BufferAccess> DebugObject for BufferView<F, B> {
     #[inline]
     fn object_type() -> vk::DebugReportObjectTypeEXT {
         vk::DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT

@@ -2473,6 +2473,9 @@ pub struct MVKSwapchainPerformance {
     pub lastFrameInterval: c_double,
     pub averageFrameInterval: c_double,
     pub averageFramesPerSecond: c_double,
+}
+
+#[repr(C)]
 pub struct DebugMarkerObjectNameInfoEXT {
     pub sType: StructureType,
     pub pNext: *const c_void,
