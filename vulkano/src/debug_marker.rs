@@ -1,15 +1,16 @@
-use std::ffi::CString;
-use std::ptr;
-use std::error;
-use std::fmt;
+
 use num_traits::ToPrimitive;
+use std::error;
+use std::ffi::CString;
+use std::fmt;
+use std::ptr;
 
 use device::DeviceOwned;
 
-use check_errors;
 use Error;
 use OomError;
 use VulkanObject;
+use check_errors;
 use vk;
 
 // TODO Queue, DescriptorPool, Semaphore
@@ -18,7 +19,9 @@ pub trait DebugMarker {
     fn set_object_tag(&mut self, tag_name: u64, tag: &[u8]) -> Result<(), DebugMarkerError>;
 }
 
-impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
+impl<T> DebugMarker for T
+    where T: VulkanObject + DeviceOwned
+{
     fn set_object_name(&mut self, name: &str) -> Result<(), DebugMarkerError> {
         if !self.device().loaded_extensions().ext_debug_marker {
             return Err(DebugMarkerError::MissingExtension);
@@ -78,8 +81,8 @@ impl error::Error for DebugMarkerError {
     fn description(&self) -> &str {
         match *self {
             DebugMarkerError::OomError(ref err) => err.description(),
-            DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension was \
-                                                   not enabled",
+            DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension was not \
+                                                   enabled",
         }
     }
 }
@@ -95,8 +98,9 @@ impl From<Error> for DebugMarkerError {
     #[inline]
     fn from(err: Error) -> DebugMarkerError {
         match err {
-            e @ Error::OutOfHostMemory | e @ Error::OutOfDeviceMemory => DebugMarkerError::OomError(e.into()),
-            _ => unreachable!()
+            e @ Error::OutOfHostMemory |
+            e @ Error::OutOfDeviceMemory => DebugMarkerError::OomError(e.into()),
+            _ => unreachable!(),
         }
     }
 }
