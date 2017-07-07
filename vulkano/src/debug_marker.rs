@@ -8,6 +8,7 @@ use device::DeviceOwned;
 
 use check_errors;
 use Error;
+use OomError;
 use VulkanObject;
 use vk;
 
@@ -67,8 +68,7 @@ impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
 /// Error that can happen when creating a debug callback.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum DebugMarkerError {
-    OutOfHostMemory,
-    OutOfDeviceMemory,
+    OomError(OomError),
     /// The `VK_EXT_debug_marker` extension was not enabled.
     MissingExtension,
 }
@@ -77,8 +77,7 @@ impl error::Error for DebugMarkerError {
     #[inline]
     fn description(&self) -> &str {
         match *self {
-            DebugMarkerError::OutOfHostMemory => "out of host memory",
-            DebugMarkerError::OutOfDeviceMemory => "out of device memory",
+            DebugMarkerError::OomError(ref err) => err.description(),
             DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension was \
                                                    not enabled",
         }
@@ -96,8 +95,7 @@ impl From<Error> for DebugMarkerError {
     #[inline]
     fn from(err: Error) -> DebugMarkerError {
         match err {
-            Error::OutOfHostMemory => DebugMarkerError::OutOfHostMemory,
-            Error::OutOfDeviceMemory => DebugMarkerError::OutOfDeviceMemory,
+            e @ Error::OutOfHostMemory | e @ Error::OutOfDeviceMemory => DebugMarkerError::OomError(e.into()),
             _ => unreachable!()
         }
     }
