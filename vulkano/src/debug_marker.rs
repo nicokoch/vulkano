@@ -26,7 +26,7 @@ impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
 
         let vk = self.device().pointers();
         let name_ffi = CString::new(name).unwrap();
-        let mut nameInfo = vk::DebugMarkerObjectNameInfoEXT {
+        let mut name_info = vk::DebugMarkerObjectNameInfoEXT {
             sType: vk::STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
             pNext: ptr::null(),
             objectType: T::debug_report_object_type(),
@@ -35,8 +35,8 @@ impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
         };
 
         unsafe {
-            try!(check_errors(vk.DebugMarkerSetObjectNameEXT(self.device().internal_object(),
-                                                             &mut nameInfo as *mut _)));
+            check_errors(vk.DebugMarkerSetObjectNameEXT(self.device().internal_object(),
+                                                        &mut name_info as *mut _))?;
         }
         Ok(())
     }
@@ -47,7 +47,7 @@ impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
         }
         assert!(tag_name != 0);
         let vk = self.device().pointers();
-        let mut tagInfo = vk::DebugMarkerObjectTagInfoEXT {
+        let mut tag_info = vk::DebugMarkerObjectTagInfoEXT {
             sType: vk::STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
             pNext: ptr::null(),
             objectType: T::debug_report_object_type(),
@@ -58,8 +58,8 @@ impl <T> DebugMarker for T where T: VulkanObject + DeviceOwned {
         };
 
         unsafe {
-            try!(check_errors(vk.DebugMarkerSetObjectTagEXT(self.device().internal_object(),
-                                                            &mut tagInfo as *mut _)));
+            check_errors(vk.DebugMarkerSetObjectTagEXT(self.device().internal_object(),
+                                                       &mut tag_info as *mut _))?;
         }
         Ok(())
     }
