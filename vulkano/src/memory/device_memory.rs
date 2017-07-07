@@ -180,6 +180,11 @@ unsafe impl VulkanObject for DeviceMemory {
     fn internal_object(&self) -> vk::DeviceMemory {
         self.memory
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_DEVICE_MEMORY_EXT
+    }
 }
 
 impl Drop for DeviceMemory {

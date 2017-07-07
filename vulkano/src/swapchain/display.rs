@@ -314,6 +314,11 @@ unsafe impl VulkanObject for Display {
     fn internal_object(&self) -> vk::DisplayKHR {
         self.properties.display
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_DISPLAY_KHR_EXT
+    }
 }
 
 /// Represents a mode on a specific display.
@@ -381,5 +386,10 @@ unsafe impl VulkanObject for DisplayMode {
     #[inline]
     fn internal_object(&self) -> vk::DisplayModeKHR {
         self.display_mode
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_DISPLAY_MODE_KHR_EXT
     }
 }

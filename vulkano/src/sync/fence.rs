@@ -275,6 +275,11 @@ unsafe impl<D> VulkanObject for Fence<D>
     fn internal_object(&self) -> vk::Fence {
         self.fence
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_FENCE_EXT
+    }
 }
 
 impl<D> Drop for Fence<D>

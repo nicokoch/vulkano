@@ -275,6 +275,11 @@ unsafe impl<'a> VulkanObject for PipelineLayoutSys<'a> {
     fn internal_object(&self) -> vk::PipelineLayout {
         *self.0
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PIPELINE_LAYOUT_EXT
+    }
 }
 
 /// Error that can happen when creating an instance.

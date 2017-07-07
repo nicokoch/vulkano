@@ -461,6 +461,11 @@ unsafe impl<'a> VulkanObject for FramebufferSys<'a> {
     fn internal_object(&self) -> vk::Framebuffer {
         self.0
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_FRAMEBUFFER_EXT
+    }
 }
 
 /// Error that can happen when creating a framebuffer object.

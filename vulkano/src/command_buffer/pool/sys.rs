@@ -229,6 +229,11 @@ unsafe impl VulkanObject for UnsafeCommandPool {
     fn internal_object(&self) -> vk::CommandPool {
         self.pool
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT
+    }
 }
 
 impl Drop for UnsafeCommandPool {
@@ -250,6 +255,11 @@ unsafe impl VulkanObject for UnsafeCommandPoolAlloc {
     #[inline]
     fn internal_object(&self) -> vk::CommandBuffer {
         self.0
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT
     }
 }
 

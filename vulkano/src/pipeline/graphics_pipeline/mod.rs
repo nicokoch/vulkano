@@ -1569,6 +1569,11 @@ unsafe impl<Mv, L, Rp> VulkanObject for GraphicsPipeline<Mv, L, Rp> {
     fn internal_object(&self) -> vk::Pipeline {
         self.inner.pipeline
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT
+    }
 }
 
 impl Drop for Inner {
@@ -1723,6 +1728,11 @@ unsafe impl<'a> VulkanObject for GraphicsPipelineSys<'a> {
     #[inline]
     fn internal_object(&self) -> vk::Pipeline {
         self.0
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT
     }
 }
 

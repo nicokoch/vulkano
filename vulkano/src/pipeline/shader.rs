@@ -250,6 +250,11 @@ unsafe impl<P> VulkanObject for ShaderModule<P>
     fn internal_object(&self) -> vk::ShaderModule {
         self.module
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_SHADER_MODULE_EXT
+    }
 }
 
 impl<P> Drop for ShaderModule<P>

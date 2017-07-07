@@ -264,6 +264,11 @@ unsafe impl VulkanObject for UnsafeBuffer {
     fn internal_object(&self) -> vk::Buffer {
         self.buffer
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_BUFFER_EXT
+    }
 }
 
 unsafe impl DeviceOwned for UnsafeBuffer {

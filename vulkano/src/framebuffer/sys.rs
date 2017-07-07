@@ -500,6 +500,11 @@ unsafe impl<'a> VulkanObject for RenderPassSys<'a> {
     fn internal_object(&self) -> vk::RenderPass {
         self.0
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_RENDER_PASS_EXT
+    }
 }
 
 /// Error that can happen when creating a compute pipeline.

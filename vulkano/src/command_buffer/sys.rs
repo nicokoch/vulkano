@@ -1199,6 +1199,11 @@ unsafe impl<P> VulkanObject for UnsafeCommandBufferBuilder<P> {
         debug_assert!(self.cmd.is_some());
         self.cmd_raw
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT
+    }
 }
 
 /// Prototype for a `vkCmdBindVertexBuffers`.
@@ -1569,5 +1574,10 @@ unsafe impl<P> VulkanObject for UnsafeCommandBuffer<P> {
     #[inline]
     fn internal_object(&self) -> vk::CommandBuffer {
         self.cmd_raw
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_COMMAND_BUFFER_EXT
     }
 }

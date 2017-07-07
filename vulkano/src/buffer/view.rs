@@ -209,6 +209,11 @@ unsafe impl<F, B> VulkanObject for BufferView<F, B>
     fn internal_object(&self) -> vk::BufferView {
         self.view
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_BUFFER_VIEW_EXT
+    }
 }
 
 unsafe impl<F, B> DeviceOwned for BufferView<F, B>

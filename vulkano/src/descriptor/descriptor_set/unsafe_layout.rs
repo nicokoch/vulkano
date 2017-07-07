@@ -131,6 +131,11 @@ unsafe impl VulkanObject for UnsafeDescriptorSetLayout {
     fn internal_object(&self) -> vk::DescriptorSetLayout {
         self.layout
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT_EXT
+    }
 }
 
 impl Drop for UnsafeDescriptorSetLayout {

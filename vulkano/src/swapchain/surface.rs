@@ -589,6 +589,11 @@ unsafe impl VulkanObject for Surface {
     fn internal_object(&self) -> vk::SurfaceKHR {
         self.surface
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_SURFACE_KHR_EXT
+    }
 }
 
 impl fmt::Debug for Surface {

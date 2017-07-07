@@ -223,6 +223,11 @@ unsafe impl VulkanObject for PipelineCache {
     fn internal_object(&self) -> vk::PipelineCache {
         self.cache
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PIPELINE_CACHE_EXT
+    }
 }
 
 impl Drop for PipelineCache {

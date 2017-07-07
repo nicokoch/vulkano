@@ -486,6 +486,11 @@ unsafe impl VulkanObject for Sampler {
     fn internal_object(&self) -> vk::Sampler {
         self.sampler
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_SAMPLER_EXT
+    }
 }
 
 impl fmt::Debug for Sampler {

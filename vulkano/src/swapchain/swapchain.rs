@@ -518,6 +518,11 @@ unsafe impl VulkanObject for Swapchain {
     fn internal_object(&self) -> vk::SwapchainKHR {
         self.swapchain
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_SWAPCHAIN_KHR_EXT
+    }
 }
 
 impl fmt::Debug for Swapchain {

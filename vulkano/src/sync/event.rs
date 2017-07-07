@@ -145,6 +145,11 @@ unsafe impl VulkanObject for Event {
     fn internal_object(&self) -> vk::Event {
         self.event
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_EVENT_EXT
+    }
 }
 
 impl Drop for Event {

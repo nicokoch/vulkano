@@ -100,6 +100,11 @@ unsafe impl VulkanObject for UnsafeQueryPool {
     fn internal_object(&self) -> Self::Object {
         self.pool
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_QUERY_POOL_EXT
+    }
 }
 
 #[derive(Debug, Copy, Clone)]

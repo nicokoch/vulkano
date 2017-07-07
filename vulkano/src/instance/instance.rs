@@ -441,6 +441,11 @@ unsafe impl VulkanObject for Instance {
     fn internal_object(&self) -> vk::Instance {
         self.instance
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_INSTANCE_EXT
+    }
 }
 
 impl Drop for Instance {
@@ -862,6 +867,11 @@ unsafe impl<'a> VulkanObject for PhysicalDevice<'a> {
     #[inline]
     fn internal_object(&self) -> vk::PhysicalDevice {
         self.infos().device
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PHYSICAL_DEVICE_EXT
     }
 }
 

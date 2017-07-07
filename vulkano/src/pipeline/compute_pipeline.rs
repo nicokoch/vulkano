@@ -217,6 +217,11 @@ unsafe impl<'a> VulkanObject for ComputePipelineSys<'a> {
     fn internal_object(&self) -> vk::Pipeline {
         self.0
     }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_PIPELINE_EXT
+    }
 }
 
 unsafe impl<Pl> PipelineLayoutAbstract for ComputePipeline<Pl>
@@ -285,6 +290,11 @@ unsafe impl<Pl> VulkanObject for ComputePipeline<Pl> {
     #[inline]
     fn internal_object(&self) -> vk::Pipeline {
         self.inner.pipeline
+    }
+
+    #[inline]
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT {
+        vk::DEBUG_REPORT_OBJECT_TYPE_SEMAPHORE_EXT
     }
 }
 

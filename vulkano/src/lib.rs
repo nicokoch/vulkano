@@ -116,6 +116,9 @@ pub unsafe trait VulkanObject {
 
     /// Returns a reference to the object.
     fn internal_object(&self) -> Self::Object;
+
+    /// Returns the type of the internal object.
+    fn debug_report_object_type() -> vk::DebugReportObjectTypeEXT;
 }
 
 /// Gives access to the internal identifier of an object.
