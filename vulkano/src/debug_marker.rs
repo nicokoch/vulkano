@@ -13,9 +13,11 @@ use VulkanObject;
 use check_errors;
 use vk;
 
-// TODO Queue, DescriptorPool, Semaphore
+/// Add user defined information to vulkan objects. Requires extension `VK_EXT_debug_marker`.
 pub trait DebugMarker {
+    /// Set the name of the vulkan object.
     fn set_object_name(&mut self, name: &str) -> Result<(), DebugMarkerError>;
+    /// Attach arbitrary data to a vulkan object.
     fn set_object_tag(&mut self, tag_name: u64, tag: &[u8]) -> Result<(), DebugMarkerError>;
 }
 
@@ -51,7 +53,7 @@ impl<T> DebugMarker for T
         assert!(tag_name != 0);
         let vk = self.device().pointers();
         let mut tag_info = vk::DebugMarkerObjectTagInfoEXT {
-            sType: vk::STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
+            sType: vk::STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT,
             pNext: ptr::null(),
             objectType: T::debug_report_object_type(),
             object: self.internal_object().to_u64().unwrap(),
@@ -68,7 +70,7 @@ impl<T> DebugMarker for T
     }
 }
 
-/// Error that can happen when creating a debug callback.
+/// Error that can happen when using debug markers.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum DebugMarkerError {
     OomError(OomError),
