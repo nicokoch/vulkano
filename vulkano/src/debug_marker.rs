@@ -82,9 +82,16 @@ impl error::Error for DebugMarkerError {
     #[inline]
     fn description(&self) -> &str {
         match *self {
-            DebugMarkerError::OomError(ref err) => err.description(),
-            DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension was not \
+            DebugMarkerError::OomError(ref err) => "not enough memory available",
+            DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension is not \
                                                    enabled",
+        }
+    }
+
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            DebugMarkerError::OomError(ref err) => Some(err),
+            _ => None,
         }
     }
 }
