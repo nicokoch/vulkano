@@ -73,6 +73,7 @@ impl<T> DebugMarker for T
 /// Error that can happen when using debug markers.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum DebugMarkerError {
+    /// Not enough memory available
     OomError(OomError),
     /// The `VK_EXT_debug_marker` extension was not enabled.
     MissingExtension,
@@ -82,7 +83,7 @@ impl error::Error for DebugMarkerError {
     #[inline]
     fn description(&self) -> &str {
         match *self {
-            DebugMarkerError::OomError(ref err) => "not enough memory available",
+            DebugMarkerError::OomError(_) => "not enough memory available",
             DebugMarkerError::MissingExtension => "the `VK_EXT_debug_marker` extension is not \
                                                    enabled",
         }
