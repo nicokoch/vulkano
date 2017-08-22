@@ -73,6 +73,7 @@ pub const MAX_MEMORY_TYPES: u32 = 32;
 pub const MAX_MEMORY_HEAPS: u32 = 16;
 pub const MAX_EXTENSION_NAME_SIZE: u32 = 256;
 pub const MAX_DESCRIPTION_SIZE: u32 = 256;
+pub const LUID_SIZE_KHR: u32 = 8;
 
 pub type PipelineCacheHeaderVersion = u32;
 pub const PIPELINE_CACHE_HEADER_VERSION_ONE: u32 = 1;
@@ -180,9 +181,12 @@ pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2_KHR: u32 = 10000590
 pub const STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR: u32 = 1000059007;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR: u32 = 1000059008;
 pub const STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN: u32 = 1000062000;
+pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR: u32 = 1000071004;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: u32 = 1000080000;
 pub const STRUCTURE_TYPE_PRESENT_REGIONS_KHR: u32 = 1000084000;
 pub const STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: u32 = 1000085000;
+pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_FENCE_INFO_KHR: u32 = 1000112000;
+pub const STRUCTURE_TYPE_EXTERNAL_FENCE_PROPERTIES_KHR: u32 = 1000112001;
 pub const STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS_KHR: u32 = 1000127000;
 pub const STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO_KHR: u32 = 1000127001;
 pub const STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2_KHR: u32 = 1000146000;
@@ -1025,6 +1029,18 @@ pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_BEGIN_RANGE_KHR: u32 = DESCRIPTOR_UPDA
 pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_END_RANGE_KHR: u32 = DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR;
 pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_RANGE_SIZE_KHR: u32 = (DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR - DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET_KHR + 1);
 pub type DescriptorUpdateTemplateCreateFlagsKHR = Flags;
+
+pub type ExternalFenceHandleTypeFlagBitsKHR = u32;
+pub const EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR: u32 = 0x00000001;
+pub const EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR: u32 = 0x00000002;
+pub const EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR: u32 = 0x00000004;
+pub const EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT_KHR: u32 = 0x00000008;
+pub type ExternalFenceHandleTypeFlagsKHR = Flags;
+
+pub type ExternalFenceFeatureFlagBitsKHR = u32;
+pub const VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT_KHR: u32 = 0x00000001;
+pub const VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT_KHR: u32 = 0x00000002;
+pub type ExternalFenceFeatureFlagsKHR = Flags;
 
 pub type PFN_vkAllocationFunction = extern "system" fn(*mut c_void, usize, usize, SystemAllocationScope) -> *mut c_void;
 pub type PFN_vkReallocationFunction = extern "system" fn(*mut c_void, *mut c_void, usize, usize, SystemAllocationScope) -> *mut c_void;
@@ -2641,6 +2657,33 @@ pub struct PresentRegionsKHR {
     pub pNext: *const c_void,
     pub swapchainCount: u32,
     pub pRegions: *const PresentRegionKHR,
+}
+
+#[repr(C)]
+pub struct ExternalFencePropertiesKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub exportFromImportedHandleTypes: ExternalFenceHandleTypeFlagsKHR,
+    pub compatibleHandleTypes: ExternalFenceHandleTypeFlagsKHR,
+    pub externalFenceFeatures: ExternalFenceFeatureFlagsKHR,
+}
+
+#[repr(C)]
+pub struct PhysicalDeviceExternalFenceInfoKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub handleType: ExternalFenceHandleTypeFlagsKHR,
+}
+
+#[repr(C)]
+pub struct PhysicalDeviceIDPropertiesKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub deviceUUID: [u8; UUID_SIZE as usize],
+    pub driverUUID: [u8; UUID_SIZE as usize],
+    pub deviceLUID: [u8; LUID_SIZE_KHR as usize],
+    pub deviceNodeMask: u32,
+    pub deviceLUIDValid: Bool32,
 }
 
 macro_rules! ptrs {

@@ -118,6 +118,7 @@ pub use self::instance::MemoryHeapsIter;
 pub use self::instance::MemoryType;
 pub use self::instance::MemoryTypesIter;
 pub use self::instance::PhysicalDevice;
+pub use self::instance::PhysicalDeviceIDProperties;
 pub use self::instance::PhysicalDeviceType;
 pub use self::instance::PhysicalDevicesIter;
 pub use self::instance::QueueFamiliesIter;

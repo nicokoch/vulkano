@@ -93,8 +93,10 @@ pub struct Instance {
 }
 
 // TODO: fix the underlying cause instead
-impl ::std::panic::UnwindSafe for Instance {}
-impl ::std::panic::RefUnwindSafe for Instance {}
+impl ::std::panic::UnwindSafe for Instance {
+}
+impl ::std::panic::RefUnwindSafe for Instance {
+}
 
 impl Instance {
     /// Initializes a new instance of Vulkan.
@@ -132,14 +134,16 @@ impl Instance {
             .map(|&layer| CString::new(layer).unwrap())
             .collect::<SmallVec<[_; 16]>>();
 
-        Instance::new_inner(app_infos, extensions.into(), layers,
+        Instance::new_inner(app_infos,
+                            extensions.into(),
+                            layers,
                             OwnedOrRef::Ref(loader::auto_loader()?))
     }
 
     /// Same as `new`, but allows specifying a loader where to load Vulkan from.
     pub fn with_loader<'a, L, Ext>(loader: FunctionPointers<Box<Loader + Send + Sync>>,
-                                   app_infos: Option<&ApplicationInfo>, extensions: Ext,
-                                   layers: L) -> Result<Arc<Instance>, InstanceCreationError>
+                                   app_infos: Option<&ApplicationInfo>, extensions: Ext, layers: L)
+                                   -> Result<Arc<Instance>, InstanceCreationError>
         where L: IntoIterator<Item = &'a &'a str>,
               Ext: Into<RawInstanceExtensions>
     {
@@ -148,7 +152,9 @@ impl Instance {
             .map(|&layer| CString::new(layer).unwrap())
             .collect::<SmallVec<[_; 16]>>();
 
-        Instance::new_inner(app_infos, extensions.into(), layers,
+        Instance::new_inner(app_infos,
+                            extensions.into(),
+                            layers,
                             OwnedOrRef::Owned(loader))
     }
 
@@ -331,6 +337,7 @@ impl Instance {
                             memory: memory,
                             queue_families: queue_families,
                             available_features: Features::from_vulkan_features(available_features),
+                            id_properties: None,
                         });
         }
         output
@@ -345,15 +352,38 @@ impl Instance {
         let mut output = Vec::with_capacity(physical_devices.len());
 
         for device in physical_devices.into_iter() {
-            let properties: vk::PhysicalDeviceProperties = unsafe {
+            let (properties, id_properties): (vk::PhysicalDeviceProperties,
+                                              Option<PhysicalDeviceIDProperties>) = unsafe {
+                let mut id_output: Option<vk::PhysicalDeviceIDPropertiesKHR> =
+                    if extensions.khr_external_fence_capabilities {
+                        Some(vk::PhysicalDeviceIDPropertiesKHR {
+                                 sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
+                                 pNext: ptr::null_mut(),
+                                 deviceUUID: mem::uninitialized(),
+                                 driverUUID: mem::uninitialized(),
+                                 deviceLUID: mem::uninitialized(),
+                                 deviceNodeMask: mem::uninitialized(),
+                                 deviceLUIDValid: mem::uninitialized(),
+                             })
+                    } else {
+                        None
+                    };
+
                 let mut output = vk::PhysicalDeviceProperties2KHR {
                     sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR,
-                    pNext: ptr::null_mut(),
+                    pNext: id_output
+                        .as_mut()
+                        .map(|id_properties| {
+                                 id_properties as *mut vk::PhysicalDeviceIDPropertiesKHR as *mut _
+                             })
+                        .unwrap_or(ptr::null_mut()),
                     properties: mem::uninitialized(),
                 };
 
                 vk.GetPhysicalDeviceProperties2KHR(device, &mut output);
-                output.properties
+
+                (output.properties,
+                 id_output.map(|id_properties| PhysicalDeviceIDProperties::from_vk(id_properties)))
             };
 
             let queue_families = unsafe {
@@ -405,6 +435,7 @@ impl Instance {
                             memory: memory,
                             queue_families: queue_families,
                             available_features: Features::from_vulkan_features(available_features),
+                            id_properties: id_properties,
                         });
         }
         output
@@ -622,6 +653,64 @@ struct PhysicalDeviceInfos {
     queue_families: Vec<vk::QueueFamilyProperties>,
     memory: vk::PhysicalDeviceMemoryProperties,
     available_features: Features,
+    id_properties: Option<PhysicalDeviceIDProperties>,
+}
+
+/// Identifier properties of the physical device for external objects.
+pub struct PhysicalDeviceIDProperties {
+    device_uuid: [u8; vk::UUID_SIZE as usize],
+    driver_uuid: [u8; vk::UUID_SIZE as usize],
+    device_luid: Option<[u8; vk::LUID_SIZE_KHR as usize]>,
+    device_node_mask: Option<u32>,
+}
+
+impl PhysicalDeviceIDProperties {
+    fn from_vk(vk: vk::PhysicalDeviceIDPropertiesKHR) -> Self {
+        let luid_valid = if vk.deviceLUIDValid == vk::TRUE { true } else { false };
+        PhysicalDeviceIDProperties {
+            device_uuid: vk.deviceUUID,
+            driver_uuid: vk.driverUUID,
+            device_luid: if luid_valid { Some(vk.deviceLUID) } else { None },
+            device_node_mask: if luid_valid { Some(vk.deviceNodeMask) } else { None },
+        }
+    }
+
+    /// UUID of the device.
+    ///
+    /// This value is unique across instances, processes, driver APIs,
+    /// driver versions, and system reboots.
+    ///
+    /// This value is not suitable for serializing and deserializing pipeline state.
+    /// To do that, use `PhysicalDevice::uuid()`.
+    pub fn device_uuid(&self) -> &[u8; 16] {
+        &self.device_uuid
+    }
+
+    /// UUID of the driver build in use by the device.
+    ///
+    /// Identical in all driver components that support sharing external objects
+    /// between eachother. Applications can compare this value across instance and
+    /// process boundaries, and can make similar queries in external APIs to
+    /// determine whether they are capable of sharing memory objects and resources
+    /// using them with the device.
+    pub fn driver_uuid(&self) -> &[u8; 16] {
+        &self.driver_uuid
+    }
+
+    /// LUID of the device.
+    ///
+    /// On Windows, this can be cast to a `LUID` object.
+    pub fn device_luid(&self) -> Option<&[u8; 8]> {
+        self.device_luid.as_ref()
+    }
+
+    /// If Vulkan is running on an operating system that supports the
+    /// Direct3D 12 API and physicalDevice corresponds to an individual device
+    /// in a linked device adapter, deviceNodeMask identifies the Direct3D 12
+    /// node corresponding to physicalDevice. Otherwise, deviceNodeMask must be 1.
+    pub fn device_node_mask(&self) -> Option<u32> {
+        self.device_node_mask
+    }
 }
 
 /// Represents one of the available devices on this machine.
@@ -888,6 +977,14 @@ impl<'a> PhysicalDevice<'a> {
     pub fn uuid(&self) -> &[u8; 16] {
         // must be equal to vk::UUID_SIZE
         &self.infos().properties.pipelineCacheUUID
+    }
+
+    /// Returns the identifier properties for the device.
+    ///
+    /// If `VK_KHR_external_fence_capabilities` is not enabled, this will be `None`.
+    #[inline]
+    pub fn id_properties(&self) -> Option<&PhysicalDeviceIDProperties> {
+        self.infos().id_properties.as_ref()
     }
 
     // Internal function to make it easier to get the infos of this device.
