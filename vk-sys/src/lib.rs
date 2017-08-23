@@ -182,6 +182,8 @@ pub const STRUCTURE_TYPE_SPARSE_IMAGE_FORMAT_PROPERTIES_2_KHR: u32 = 1000059007;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_SPARSE_IMAGE_FORMAT_INFO_2_KHR: u32 = 1000059008;
 pub const STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN: u32 = 1000062000;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR: u32 = 1000071004;
+pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: u32 = 1000076000;
+pub const STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHR: u32 = 1000076001;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: u32 = 1000080000;
 pub const STRUCTURE_TYPE_PRESENT_REGIONS_KHR: u32 = 1000084000;
 pub const STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: u32 = 1000085000;
@@ -1029,6 +1031,19 @@ pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_BEGIN_RANGE_KHR: u32 = DESCRIPTOR_UPDA
 pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_END_RANGE_KHR: u32 = DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR;
 pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_RANGE_SIZE_KHR: u32 = (DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR - DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET_KHR + 1);
 pub type DescriptorUpdateTemplateCreateFlagsKHR = Flags;
+
+pub type ExternalSemaphoreHandleTypeFlagBitsKHR = u32;
+pub const EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR: u32 = 0x00000001;
+pub const EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR: u32 = 0x00000002;
+pub const EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR: u32 = 0x00000004;
+pub const EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR: u32 = 0x00000008;
+pub const EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR: u32 = 0x00000010;
+pub type ExternalSemaphoreHandleTypeFlagsKHR = Flags;
+
+pub type ExternalSemaphoreFeatureFlagBitsKHR = u32;
+pub const VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHR: u32 = 0x00000001;
+pub const VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR: u32 = 0x00000002;
+pub type ExternalSemaphoreFeatureFlagsKHR = Flags;
 
 pub type ExternalFenceHandleTypeFlagBitsKHR = u32;
 pub const EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR: u32 = 0x00000001;
@@ -2660,6 +2675,33 @@ pub struct PresentRegionsKHR {
 }
 
 #[repr(C)]
+pub struct PhysicalDeviceIDPropertiesKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub deviceUUID: [u8; UUID_SIZE as usize],
+    pub driverUUID: [u8; UUID_SIZE as usize],
+    pub deviceLUID: [u8; LUID_SIZE_KHR as usize],
+    pub deviceNodeMask: u32,
+    pub deviceLUIDValid: Bool32,
+}
+
+#[repr(C)]
+pub struct PhysicalDeviceExternalSemaphoreInfoKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub handleType: ExternalSemaphoreHandleTypeFlagsKHR,
+}
+
+#[repr(C)]
+pub struct ExternalSemaphorePropertiesKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub exportFromImportedHandleTypes: ExternalSemaphoreHandleTypeFlagsKHR,
+    pub compatibleHandleTypes: ExternalSemaphoreHandleTypeFlagsKHR,
+    pub externalSemaphoreFeatures: ExternalSemaphoreFeatureFlagsKHR,
+}
+
+#[repr(C)]
 pub struct ExternalFencePropertiesKHR {
     pub sType: StructureType,
     pub pNext: *const c_void,
@@ -2673,17 +2715,6 @@ pub struct PhysicalDeviceExternalFenceInfoKHR {
     pub sType: StructureType,
     pub pNext: *const c_void,
     pub handleType: ExternalFenceHandleTypeFlagsKHR,
-}
-
-#[repr(C)]
-pub struct PhysicalDeviceIDPropertiesKHR {
-    pub sType: StructureType,
-    pub pNext: *const c_void,
-    pub deviceUUID: [u8; UUID_SIZE as usize],
-    pub driverUUID: [u8; UUID_SIZE as usize],
-    pub deviceLUID: [u8; LUID_SIZE_KHR as usize],
-    pub deviceNodeMask: u32,
-    pub deviceLUIDValid: Bool32,
 }
 
 macro_rules! ptrs {
@@ -2797,6 +2828,7 @@ ptrs!(InstancePointers, {
     GetPhysicalDeviceQueueFamilyProperties2KHR => (physicalDevice: PhysicalDevice, pQueueFamilyPropertiesCount: *mut u32, pQueueFamilyProperties: *mut QueueFamilyProperties2KHR) -> (),
     GetPhysicalDeviceMemoryProperties2KHR => (physicalDevice: PhysicalDevice, pMemoryProperties: *mut PhysicalDeviceMemoryProperties2KHR) -> (),
     GetPhysicalDeviceSparseImageFormatProperties2KHR => (physicalDevice: PhysicalDevice, pFormatInfo: *const PhysicalDeviceSparseImageFormatInfo2KHR, pPropertyCount: *mut u32, pProperties: *mut SparseImageFormatProperties2KHR) -> (),
+    GetPhysicalDeviceExternalSemaphorePropertiesKHR => (physicalDevice: PhysicalDevice, pExternalSemaphoreInfo: *const PhysicalDeviceExternalSemaphoreInfoKHR, pExternalSemaphoreProperties: *mut ExternalSemaphorePropertiesKHR) -> (),
 });
 
 ptrs!(DevicePointers, {

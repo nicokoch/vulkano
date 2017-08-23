@@ -356,6 +356,7 @@ impl Instance {
                                               Option<PhysicalDeviceIDProperties>) = unsafe {
                 let mut id_output: Option<vk::PhysicalDeviceIDPropertiesKHR> =
                     if extensions.khr_external_semaphore_capabilities {
+                        // TODO any of the external_capabilities enables this
                         Some(vk::PhysicalDeviceIDPropertiesKHR {
                                  sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
                                  pNext: ptr::null_mut(),
