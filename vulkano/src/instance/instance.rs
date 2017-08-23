@@ -657,6 +657,7 @@ struct PhysicalDeviceInfos {
 }
 
 /// Identifier properties of the physical device for external objects.
+#[derive(Debug, Clone)]
 pub struct PhysicalDeviceIDProperties {
     device_uuid: [u8; vk::UUID_SIZE as usize],
     driver_uuid: [u8; vk::UUID_SIZE as usize],
