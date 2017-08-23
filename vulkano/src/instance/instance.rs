@@ -355,7 +355,7 @@ impl Instance {
             let (properties, id_properties): (vk::PhysicalDeviceProperties,
                                               Option<PhysicalDeviceIDProperties>) = unsafe {
                 let mut id_output: Option<vk::PhysicalDeviceIDPropertiesKHR> =
-                    if extensions.khr_external_fence_capabilities {
+                    if extensions.khr_external_semaphore_capabilities {
                         Some(vk::PhysicalDeviceIDPropertiesKHR {
                                  sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR,
                                  pNext: ptr::null_mut(),
@@ -982,7 +982,7 @@ impl<'a> PhysicalDevice<'a> {
 
     /// Returns the identifier properties for the device.
     ///
-    /// If `VK_KHR_external_fence_capabilities` is not enabled, this will be `None`.
+    /// If none of the `VK_KHR_external_*_capabilities` extensions is enabled, this will be `None`.
     #[inline]
     pub fn id_properties(&self) -> Option<&PhysicalDeviceIDProperties> {
         self.infos().id_properties.as_ref()
