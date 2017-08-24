@@ -104,6 +104,7 @@ pub const ERROR_INCOMPATIBLE_DISPLAY_KHR: u32 = -1000003001i32 as u32;
 pub const ERROR_VALIDATION_FAILED_EXT: u32 = -1000011001i32 as u32;
 pub const ERROR_INVALID_SHADER_NV: u32 = -1000012000i32 as u32;
 pub const ERROR_OUT_OF_POOL_MEMORY_KHR: u32 = -1000069000i32 as u32;
+pub const ERROR_INVALID_EXTERNAL_HANDLE_KHR: u32 = -1000072003i32 as u32;
 
 pub type StructureType = u32;
 pub const STRUCTURE_TYPE_APPLICATION_INFO: u32 = 0;
@@ -1045,6 +1046,10 @@ pub type ExternalSemaphoreFeatureFlagBitsKHR = u32;
 pub const VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT_KHR: u32 = 0x00000001;
 pub const VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT_KHR: u32 = 0x00000002;
 pub type ExternalSemaphoreFeatureFlagsKHR = Flags;
+
+pub type SemaphoreImportFlagBitsKHR = u32;
+pub const SEMAPHORE_IMPORT_TEMPORARY_BIT_KHR: u32 = 0x00000001;
+pub type SemaphoreImportFlagsKHR = Flags;
 
 pub type ExternalFenceHandleTypeFlagBitsKHR = u32;
 pub const EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR: u32 = 0x00000001;
