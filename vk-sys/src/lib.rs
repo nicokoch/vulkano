@@ -184,6 +184,7 @@ pub const STRUCTURE_TYPE_VI_SURFACE_CREATE_INFO_NN: u32 = 1000062000;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES_KHR: u32 = 1000071004;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR: u32 = 1000076000;
 pub const STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHR: u32 = 1000076001;
+pub const STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO_KHR: u32 = 1000077000;
 pub const STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR: u32 = 1000080000;
 pub const STRUCTURE_TYPE_PRESENT_REGIONS_KHR: u32 = 1000084000;
 pub const STRUCTURE_TYPE_DESCRIPTOR_UPDATE_TEMPLATE_CREATE_INFO_KHR: u32 = 1000085000;
@@ -2699,6 +2700,13 @@ pub struct ExternalSemaphorePropertiesKHR {
     pub exportFromImportedHandleTypes: ExternalSemaphoreHandleTypeFlagsKHR,
     pub compatibleHandleTypes: ExternalSemaphoreHandleTypeFlagsKHR,
     pub externalSemaphoreFeatures: ExternalSemaphoreFeatureFlagsKHR,
+}
+
+#[repr(C)]
+pub struct ExportSemaphoreCreateInfoKHR {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub handleTypes: ExternalSemaphoreHandleTypeFlagsKHR,
 }
 
 #[repr(C)]

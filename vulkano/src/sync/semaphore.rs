@@ -33,6 +33,7 @@ pub struct Semaphore<D = Arc<Device>>
     semaphore: vk::Semaphore,
     device: D,
     must_put_in_pool: bool,
+    exportable_to: Vec<ExternalSemaphoreHandleType>,
 }
 
 impl<D> Semaphore<D>
@@ -52,11 +53,12 @@ impl<D> Semaphore<D>
                        device: device,
                        semaphore: raw_sem,
                        must_put_in_pool: true,
+                       exportable_to: Vec::new(),
                    })
             },
             None => {
                 // Pool is empty, alloc new semaphore
-                Semaphore::alloc_impl(device, true, None)
+                unsafe { Semaphore::alloc_impl(device, true, None) }
             },
         }
     }
@@ -64,39 +66,86 @@ impl<D> Semaphore<D>
     /// Builds a new semaphore.
     #[inline]
     pub fn alloc(device: D) -> Result<Semaphore<D>, OomError> {
-        Semaphore::alloc_impl(device, false, None)
+        unsafe { Semaphore::alloc_impl(device, false, None) }
     }
 
     /// Builds a new semaphore that can be exported to native handles.
+    ///
+    /// `handle_types` is the list of handle types this semaphore can be exported to.
     #[inline]
-    pub fn exportable(device: D, handle_types: &SemaphoreHandleTypes)
+    pub fn exportable(device: D, handle_types: &[ExternalSemaphoreHandleType])
                       -> Result<Semaphore<D>, ExternalSemaphoreError> {
-        if !device.instance().loaded_extensions().khr_get_physical_device_properties2 {
+        if !device
+            .instance()
+            .loaded_extensions()
+            .khr_get_physical_device_properties2
+        {
             return Err(ExternalSemaphoreError::GetPhysicalDeviceProperties2NotEnabled);
         }
-        if !device.instance().loaded_extensions().khr_external_semaphore_capabilities {
+        if !device
+            .instance()
+            .loaded_extensions()
+            .khr_external_semaphore_capabilities
+        {
             return Err(ExternalSemaphoreError::ExternalSemaphoreCapabilitiesNotEnabled);
         }
+
         if !device.loaded_extensions().khr_external_semaphore {
             return Err(ExternalSemaphoreError::ExternalSemaphoreNotEnabled);
         }
-        unimplemented!()
+
+        // Make sure the given handle types are supported and compatible
+        for handle_type in handle_types.iter() {
+            let physical_device = device.physical_device();
+            let properties = physical_device.external_semaphore_properties().get(handle_type).unwrap();
+            if properties.external_semaphore_features == 0 {
+                return Err(ExternalSemaphoreError::HandleTypeNotSupported(*handle_type));
+            }
+            // Check if handle_type is compatible with all other handle types
+            for other_handle_type in handle_types.iter() {
+                if other_handle_type == handle_type {
+                    continue;
+                }
+                if other_handle_type.to_vk() & properties.compatible_handle_types == 0 {
+                    return Err(ExternalSemaphoreError::IncompatibleHandleTypes(*handle_type, *other_handle_type));
+                }
+            }
+        }
+        unsafe {
+            Semaphore::alloc_impl(device, false, Some(handle_types))
+                .map_err(|oom_error| ExternalSemaphoreError::OomError(oom_error))
+        }
     }
 
-    fn alloc_impl(device: D, must_put_in_pool: bool, handle_types: Option<&SemaphoreHandleTypes>)
+    // Unsafety: if handle_type is `Some`, the given handle types must be supported and compatible.
+    unsafe fn alloc_impl(device: D, must_put_in_pool: bool, export_handle_types: Option<&[ExternalSemaphoreHandleType]>)
                   -> Result<Semaphore<D>, OomError> {
-        let semaphore = unsafe {
+        let export_create_info: Option<vk::ExportSemaphoreCreateInfoKHR> = if let Some(export_handle_types) = export_handle_types {
+            debug_assert!(device.loaded_extensions().khr_external_semaphore);
+            let mut handle_types = 0u32;
+            for handle_type in export_handle_types.iter() {
+                handle_types |= handle_type.to_vk();
+            }
+            Some(vk::ExportSemaphoreCreateInfoKHR {
+                sType: vk::STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO_KHR,
+                pNext: ptr::null_mut(),
+                handleTypes: handle_types,
+            })
+        } else {
+            None
+        };
+        let semaphore = {
             // since the creation is constant, we use a `static` instead of a struct on the stack
-            static mut INFOS: vk::SemaphoreCreateInfo = vk::SemaphoreCreateInfo {
+            let infos: vk::SemaphoreCreateInfo = vk::SemaphoreCreateInfo {
                 sType: vk::STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
-                pNext: 0 as *const _, // ptr::null()
+                pNext: export_create_info.as_ref().map(|export_info| export_info as *const vk::ExportSemaphoreCreateInfoKHR as *const _).unwrap_or(ptr::null()),
                 flags: 0, // reserved
             };
 
             let vk = device.pointers();
             let mut output = mem::uninitialized();
             check_errors(vk.CreateSemaphore(device.internal_object(),
-                                            &INFOS,
+                                            &infos,
                                             ptr::null(),
                                             &mut output))?;
             output
@@ -106,6 +155,10 @@ impl<D> Semaphore<D>
                device: device,
                semaphore: semaphore,
                must_put_in_pool: must_put_in_pool,
+               exportable_to: match export_handle_types {
+                   Some(handle_types) => handle_types.iter().cloned().collect(),
+                   None => Vec::new()
+               }
            })
     }
 }
@@ -147,24 +200,29 @@ impl<D> Drop for Semaphore<D>
 
 /// Represents handle types that semaphores can be exported to.
 /// TODO: Documentation for each handle type
-#[derive(Clone, Debug, Default)]
-pub struct SemaphoreHandleTypes {
-    pub opaque_fd: bool,
-    pub opaque_win32: bool,
-    pub opaque_win32_kmt: bool,
-    pub d3d12_fence: bool,
-    pub sync_fd: bool,
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum ExternalSemaphoreHandleType {
+    OpaqueFd,
+    OpaqueWin32,
+    OpaqueWin32Kmt,
+    D3d12Fence,
+    SyncFd,
 }
 
-impl SemaphoreHandleTypes {
-    fn to_vk_flags(&self) -> vk::ExternalSemaphoreHandleTypeFlagsKHR {
-        let mut flags = 0u32;
-        if self.opaque_fd { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR }
-        if self.opaque_win32 { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR }
-        if self.opaque_win32_kmt { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR }
-        if self.d3d12_fence { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR }
-        if self.sync_fd { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR }
-        flags
+impl ExternalSemaphoreHandleType {
+    pub(crate) fn to_vk(&self) -> vk::ExternalSemaphoreHandleTypeFlagsKHR {
+        match *self {
+            ExternalSemaphoreHandleType::OpaqueFd =>
+                vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+            ExternalSemaphoreHandleType::OpaqueWin32 =>
+                vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+            ExternalSemaphoreHandleType::OpaqueWin32Kmt =>
+                vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+            ExternalSemaphoreHandleType::D3d12Fence =>
+                vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
+            ExternalSemaphoreHandleType::SyncFd =>
+                vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR,
+        }
     }
 }
 
@@ -189,8 +247,11 @@ pub enum ExternalSemaphoreError {
     /// Device extension `VK_KHR_external_semaphore_win32` not enabled.
     ExternalSemaphoreWin32NotEnabled,
 
-    /// Requested handle types not supported by the implementation.
-    HandleTypesNotSupported,
+    /// Requested handle type not supported by the implementation.
+    HandleTypeNotSupported(ExternalSemaphoreHandleType),
+
+    /// Requested handle types are not compatible.
+    IncompatibleHandleTypes(ExternalSemaphoreHandleType, ExternalSemaphoreHandleType),
 }
 
 impl error::Error for ExternalSemaphoreError {
@@ -208,8 +269,10 @@ impl error::Error for ExternalSemaphoreError {
                 "device extension `VK_KHR_external_semaphore_fd` not enabled",
             ExternalSemaphoreError::ExternalSemaphoreWin32NotEnabled =>
                 "device extension `VK_KHR_external_semaphore_win32` not enabled",
-            ExternalSemaphoreError::HandleTypesNotSupported =>
-                "requested handle types not supported by the implementation",
+            ExternalSemaphoreError::HandleTypeNotSupported(_) =>
+                "requested handle type not supported by the implementation",
+            ExternalSemaphoreError::IncompatibleHandleTypes(_, _) =>
+                "requested handle types are not compatible",
         }
     }
 

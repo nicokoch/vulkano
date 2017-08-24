@@ -121,6 +121,7 @@ pub use self::future::now;
 pub use self::pipeline::AccessFlagBits;
 pub use self::pipeline::PipelineStages;
 pub use self::semaphore::Semaphore;
+pub use self::semaphore::ExternalSemaphoreHandleType;
 
 mod event;
 mod fence;

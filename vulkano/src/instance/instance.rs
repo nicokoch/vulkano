@@ -28,6 +28,7 @@ use instance::loader;
 use instance::loader::FunctionPointers;
 use instance::loader::Loader;
 use instance::loader::LoadingError;
+use sync::ExternalSemaphoreHandleType;
 use vk;
 
 use features::Features;
@@ -432,19 +433,19 @@ impl Instance {
                 output.features
             };
 
-            let external_semaphore_properties: HashMap<vk::ExternalSemaphoreHandleTypeFlagsKHR, ExternalSemaphoreProperties> = unsafe {
+            let external_semaphore_properties: HashMap<ExternalSemaphoreHandleType, ExternalSemaphoreProperties> = unsafe {
                 let mut result = HashMap::new();
                 if extensions.khr_external_semaphore_capabilities {
                     // We query the properties for each handle type
-                    for handle_type in [vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
-                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
-                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
-                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
-                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR].iter() {
+                    for handle_type in [ExternalSemaphoreHandleType::OpaqueFd,
+                                        ExternalSemaphoreHandleType::OpaqueWin32,
+                                        ExternalSemaphoreHandleType::OpaqueWin32Kmt,
+                                        ExternalSemaphoreHandleType::D3d12Fence,
+                                        ExternalSemaphoreHandleType::SyncFd].iter() {
                         let info = vk::PhysicalDeviceExternalSemaphoreInfoKHR {
                             sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
                             pNext: ptr::null_mut(),
-                            handleType: *handle_type,
+                            handleType: handle_type.to_vk(),
                         };
 
                         let mut ext_sem_output = vk::ExternalSemaphorePropertiesKHR {
@@ -694,7 +695,7 @@ struct PhysicalDeviceInfos {
     available_features: Features,
     id_properties: Option<PhysicalDeviceIDProperties>,
     external_semaphore_properties:
-        HashMap<vk::ExternalSemaphoreHandleTypeFlagsKHR, ExternalSemaphoreProperties>,
+        HashMap<ExternalSemaphoreHandleType, ExternalSemaphoreProperties>,
 }
 
 /// Identifier properties of the physical device for external objects.
@@ -769,7 +770,7 @@ impl PhysicalDeviceIDProperties {
 
 /// vkExternalSemaphorePropertiesKHR without sType and pNext.
 #[derive(Debug, Clone)]
-struct ExternalSemaphoreProperties {
+pub(crate) struct ExternalSemaphoreProperties {
     pub export_from_imported_handle_types: u32,
     pub compatible_handle_types: u32,
     pub external_semaphore_features: u32,
@@ -1047,6 +1048,11 @@ impl<'a> PhysicalDevice<'a> {
     #[inline]
     pub fn id_properties(&self) -> Option<&PhysicalDeviceIDProperties> {
         self.infos().id_properties.as_ref()
+    }
+
+    #[inline]
+    pub(crate) fn external_semaphore_properties(&self) -> &HashMap<ExternalSemaphoreHandleType, ExternalSemaphoreProperties> {
+        &self.infos().external_semaphore_properties
     }
 
     // Internal function to make it easier to get the infos of this device.
