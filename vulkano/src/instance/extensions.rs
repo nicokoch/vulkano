@@ -400,6 +400,7 @@ device_extensions! {
     khr_get_memory_requirements2 => b"VK_KHR_get_memory_requirements2",
     khr_dedicated_allocation => b"VK_KHR_dedicated_allocation",
     khr_incremental_present => b"VK_KHR_incremental_present",
+    khr_external_semaphore => b"VK_KHR_external_semaphore",
 }
 
 /// Error that can happen when loading the list of layers.

@@ -7,10 +7,13 @@
 // notice may not be copied, modified, or distributed except
 // according to those terms.
 
+use std::error;
+use std::fmt;
 use std::mem;
 use std::ptr;
 use std::sync::Arc;
 
+use Error;
 use OomError;
 use SafeDeref;
 use VulkanObject;
@@ -53,7 +56,7 @@ impl<D> Semaphore<D>
             },
             None => {
                 // Pool is empty, alloc new semaphore
-                Semaphore::alloc_impl(device, true)
+                Semaphore::alloc_impl(device, true, None)
             },
         }
     }
@@ -61,10 +64,27 @@ impl<D> Semaphore<D>
     /// Builds a new semaphore.
     #[inline]
     pub fn alloc(device: D) -> Result<Semaphore<D>, OomError> {
-        Semaphore::alloc_impl(device, false)
+        Semaphore::alloc_impl(device, false, None)
     }
 
-    fn alloc_impl(device: D, must_put_in_pool: bool) -> Result<Semaphore<D>, OomError> {
+    /// Builds a new semaphore that can be exported to native handles.
+    #[inline]
+    pub fn exportable(device: D, handle_types: &SemaphoreHandleTypes)
+                      -> Result<Semaphore<D>, ExternalSemaphoreError> {
+        if !device.instance().loaded_extensions().khr_get_physical_device_properties2 {
+            return Err(ExternalSemaphoreError::GetPhysicalDeviceProperties2NotEnabled);
+        }
+        if !device.instance().loaded_extensions().khr_external_semaphore_capabilities {
+            return Err(ExternalSemaphoreError::ExternalSemaphoreCapabilitiesNotEnabled);
+        }
+        if !device.loaded_extensions().khr_external_semaphore {
+            return Err(ExternalSemaphoreError::ExternalSemaphoreNotEnabled);
+        }
+        unimplemented!()
+    }
+
+    fn alloc_impl(device: D, must_put_in_pool: bool, handle_types: Option<&SemaphoreHandleTypes>)
+                  -> Result<Semaphore<D>, OomError> {
         let semaphore = unsafe {
             // since the creation is constant, we use a `static` instead of a struct on the stack
             static mut INFOS: vk::SemaphoreCreateInfo = vk::SemaphoreCreateInfo {
@@ -125,10 +145,105 @@ impl<D> Drop for Semaphore<D>
     }
 }
 
+/// Represents handle types that semaphores can be exported to.
+/// TODO: Documentation for each handle type
+#[derive(Clone, Debug, Default)]
+pub struct SemaphoreHandleTypes {
+    pub opaque_fd: bool,
+    pub opaque_win32: bool,
+    pub opaque_win32_kmt: bool,
+    pub d3d12_fence: bool,
+    pub sync_fd: bool,
+}
+
+impl SemaphoreHandleTypes {
+    fn to_vk_flags(&self) -> vk::ExternalSemaphoreHandleTypeFlagsKHR {
+        let mut flags = 0u32;
+        if self.opaque_fd { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR }
+        if self.opaque_win32 { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR }
+        if self.opaque_win32_kmt { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR }
+        if self.d3d12_fence { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR }
+        if self.sync_fd { flags |= vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR }
+        flags
+    }
+}
+
+/// Error that can be returned when dealing with external semaphores.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum ExternalSemaphoreError {
+    /// No memory available.
+    OomError(OomError),
+
+    /// Instance extension `VK_KHR_get_physical_device_properties2` not enabled.
+    GetPhysicalDeviceProperties2NotEnabled,
+
+    /// Device extension `VK_KHR_external_semaphore` not enabled.
+    ExternalSemaphoreNotEnabled,
+
+    /// Instance extension `VK_KHR_external_semaphore_capabilities` not enabled.
+    ExternalSemaphoreCapabilitiesNotEnabled,
+
+    /// Device extension `VK_KHR_external_semaphore_fd` not enabled.
+    ExternalSemaphoreFdNotEnabled,
+
+    /// Device extension `VK_KHR_external_semaphore_win32` not enabled.
+    ExternalSemaphoreWin32NotEnabled,
+
+    /// Requested handle types not supported by the implementation.
+    HandleTypesNotSupported,
+}
+
+impl error::Error for ExternalSemaphoreError {
+    #[inline]
+    fn description(&self) -> &str {
+        match *self {
+            ExternalSemaphoreError::OomError(_) => "no memory available",
+            ExternalSemaphoreError::GetPhysicalDeviceProperties2NotEnabled =>
+                "instance extension `VK_KHR_get_physical_device_properties2` not enabled",
+            ExternalSemaphoreError::ExternalSemaphoreNotEnabled =>
+                "device extension `VK_KHR_external_semaphore` not enabled",
+            ExternalSemaphoreError::ExternalSemaphoreCapabilitiesNotEnabled =>
+                "instance extension `VK_KHR_external_semaphore_capabilities` not enabled",
+            ExternalSemaphoreError::ExternalSemaphoreFdNotEnabled =>
+                "device extension `VK_KHR_external_semaphore_fd` not enabled",
+            ExternalSemaphoreError::ExternalSemaphoreWin32NotEnabled =>
+                "device extension `VK_KHR_external_semaphore_win32` not enabled",
+            ExternalSemaphoreError::HandleTypesNotSupported =>
+                "requested handle types not supported by the implementation",
+        }
+    }
+
+    #[inline]
+    fn cause(&self) -> Option<&error::Error> {
+        match *self {
+            ExternalSemaphoreError::OomError(ref err) => Some(err),
+            _ => None,
+        }
+    }
+}
+
+impl fmt::Display for ExternalSemaphoreError {
+    #[inline]
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(fmt, "{}", error::Error::description(self))
+    }
+}
+
+impl From<Error> for ExternalSemaphoreError {
+    #[inline]
+    fn from(err: Error) -> ExternalSemaphoreError {
+        match err {
+            Error::OutOfHostMemory => ExternalSemaphoreError::OomError(From::from(err)),
+            Error::OutOfDeviceMemory => ExternalSemaphoreError::OomError(From::from(err)),
+            _ => panic!("Unexpected error value: {}", err as i32),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use sync::Semaphore;
     use VulkanObject;
+    use sync::Semaphore;
 
     #[test]
     fn semaphore_create() {

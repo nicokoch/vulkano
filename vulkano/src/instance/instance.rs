@@ -9,6 +9,7 @@
 
 use smallvec::SmallVec;
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::error;
 use std::ffi::CStr;
 use std::ffi::CString;
@@ -338,6 +339,7 @@ impl Instance {
                             queue_families: queue_families,
                             available_features: Features::from_vulkan_features(available_features),
                             id_properties: None,
+                            external_semaphore_properties: HashMap::new(),
                         });
         }
         output
@@ -430,6 +432,41 @@ impl Instance {
                 output.features
             };
 
+            let external_semaphore_properties: HashMap<vk::ExternalSemaphoreHandleTypeFlagsKHR, ExternalSemaphoreProperties> = unsafe {
+                let mut result = HashMap::new();
+                if extensions.khr_external_semaphore_capabilities {
+                    // We query the properties for each handle type
+                    for handle_type in [vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT_KHR,
+                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT_KHR,
+                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT_BIT_KHR,
+                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE_BIT_KHR,
+                                        vk::EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT_KHR].iter() {
+                        let info = vk::PhysicalDeviceExternalSemaphoreInfoKHR {
+                            sType: vk::STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_SEMAPHORE_INFO_KHR,
+                            pNext: ptr::null_mut(),
+                            handleType: *handle_type,
+                        };
+
+                        let mut ext_sem_output = vk::ExternalSemaphorePropertiesKHR {
+                            sType: vk::STRUCTURE_TYPE_EXTERNAL_SEMAPHORE_PROPERTIES_KHR,
+                            pNext: ptr::null_mut(),
+                            exportFromImportedHandleTypes: 0,
+                            compatibleHandleTypes: 0,
+                            externalSemaphoreFeatures: 0,
+                        };
+
+                        vk.GetPhysicalDeviceExternalSemaphorePropertiesKHR(device, &info as *const _, &mut ext_sem_output as *mut _);
+                        let properties = ExternalSemaphoreProperties {
+                            export_from_imported_handle_types: ext_sem_output.exportFromImportedHandleTypes,
+                            compatible_handle_types: ext_sem_output.compatibleHandleTypes,
+                            external_semaphore_features: ext_sem_output.externalSemaphoreFeatures,
+                        };
+                        result.insert(*handle_type, properties);
+                    }
+                }
+                result
+            };
+
             output.push(PhysicalDeviceInfos {
                             device: device,
                             properties: properties,
@@ -437,6 +474,7 @@ impl Instance {
                             queue_families: queue_families,
                             available_features: Features::from_vulkan_features(available_features),
                             id_properties: id_properties,
+                            external_semaphore_properties: external_semaphore_properties,
                         });
         }
         output
@@ -655,6 +693,8 @@ struct PhysicalDeviceInfos {
     memory: vk::PhysicalDeviceMemoryProperties,
     available_features: Features,
     id_properties: Option<PhysicalDeviceIDProperties>,
+    external_semaphore_properties:
+        HashMap<vk::ExternalSemaphoreHandleTypeFlagsKHR, ExternalSemaphoreProperties>,
 }
 
 /// Identifier properties of the physical device for external objects.
@@ -668,12 +708,24 @@ pub struct PhysicalDeviceIDProperties {
 
 impl PhysicalDeviceIDProperties {
     fn from_vk(vk: vk::PhysicalDeviceIDPropertiesKHR) -> Self {
-        let luid_valid = if vk.deviceLUIDValid == vk::TRUE { true } else { false };
+        let luid_valid = if vk.deviceLUIDValid == vk::TRUE {
+            true
+        } else {
+            false
+        };
         PhysicalDeviceIDProperties {
             device_uuid: vk.deviceUUID,
             driver_uuid: vk.driverUUID,
-            device_luid: if luid_valid { Some(vk.deviceLUID) } else { None },
-            device_node_mask: if luid_valid { Some(vk.deviceNodeMask) } else { None },
+            device_luid: if luid_valid {
+                Some(vk.deviceLUID)
+            } else {
+                None
+            },
+            device_node_mask: if luid_valid {
+                Some(vk.deviceNodeMask)
+            } else {
+                None
+            },
         }
     }
 
@@ -713,6 +765,14 @@ impl PhysicalDeviceIDProperties {
     pub fn device_node_mask(&self) -> Option<u32> {
         self.device_node_mask
     }
+}
+
+/// vkExternalSemaphorePropertiesKHR without sType and pNext.
+#[derive(Debug, Clone)]
+struct ExternalSemaphoreProperties {
+    pub export_from_imported_handle_types: u32,
+    pub compatible_handle_types: u32,
+    pub external_semaphore_features: u32,
 }
 
 /// Represents one of the available devices on this machine.
