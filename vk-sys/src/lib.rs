@@ -56,6 +56,7 @@ pub type DisplayKHR = u64;
 pub type DisplayModeKHR = u64;
 pub type DebugReportCallbackEXT = u64;
 pub type DescriptorUpdateTemplateKHR = u64;
+pub type DebugUtilsMessengerEXT = u64;
 
 pub const LOD_CLAMP_NONE: f32 = 1000.0;
 pub const REMAINING_MIP_LEVELS: u32 = 0xffffffff;
@@ -192,6 +193,11 @@ pub const STRUCTURE_TYPE_SPARSE_IMAGE_MEMORY_REQUIREMENTS_2_KHR: u32 = 100014600
 pub const STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT: u32 = 1000022000;
 pub const STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_TAG_INFO_EXT: u32 = 1000022001;
 pub const STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT: u32 = 1000022002;
+pub const STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT: u32 = 1000128000;
+pub const STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_TAG_INFO_EXT: u32 = 1000128001;
+pub const STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT: u32 = 1000128002;
+pub const STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CALLBACK_DATA_EXT: u32 = 1000128003;
+pub const STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT: u32 = 1000128004;
 
 pub type SystemAllocationScope = u32;
 pub const SYSTEM_ALLOCATION_SCOPE_COMMAND: u32 = 0;
@@ -1075,12 +1081,28 @@ pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_END_RANGE_KHR: u32 = DESCRIPTOR_UPDATE
 pub const DESCRIPTOR_UPDATE_TEMPLATE_TYPE_RANGE_SIZE_KHR: u32 = (DESCRIPTOR_UPDATE_TEMPLATE_TYPE_PUSH_DESCRIPTORS_KHR - DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET_KHR + 1);
 pub type DescriptorUpdateTemplateCreateFlagsKHR = Flags;
 
+pub type DebugUtilsMessageSeverityFlagBitsEXT = u32;
+pub const DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT: u32 = 0x00000001;
+pub const DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT: u32 = 0x00000010;
+pub const DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT: u32 = 0x00000100;
+pub const DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT: u32 = 0x00001000;
+
+pub type DebugUtilsMessageTypeFlagBitsEXT = u32;
+pub const DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT: u32 = 0x00000001;
+pub const DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT: u32 = 0x000000002;
+pub const DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT: u32 = 0x00000004;
+
+pub type DebugUtilsMessengerCallbackDataFlagsEXT = u32;
+
+pub type DebugUtilsMessengerCreateFlagsEXT = u32;
+
 pub type PFN_vkAllocationFunction = extern "system" fn(*mut c_void, usize, usize, SystemAllocationScope) -> *mut c_void;
 pub type PFN_vkReallocationFunction = extern "system" fn(*mut c_void, *mut c_void, usize, usize, SystemAllocationScope) -> *mut c_void;
 pub type PFN_vkFreeFunction = extern "system" fn(*mut c_void, *mut c_void);
 pub type PFN_vkInternalAllocationNotification = extern "system" fn(*mut c_void, usize, InternalAllocationType, SystemAllocationScope) -> *mut c_void;
 pub type PFN_vkInternalFreeNotification = extern "system" fn(*mut c_void, usize, InternalAllocationType, SystemAllocationScope) -> *mut c_void;
 pub type PFN_vkDebugReportCallbackEXT = extern "system" fn(DebugReportFlagsEXT, DebugReportObjectTypeEXT, u64, usize, i32, *const c_char, *const c_char, *mut c_void) -> Bool32;
+pub type PFN_vkDebugUtilsMessengerCallbackEXT = extern "system" fn(DebugUtilsMessageSeverityFlagBitsEXT, DebugUtilsMessageTypeFlagBitsEXT, *const DebugUtilsMessengerCallbackDataEXT, *mut c_void) -> Bool32;
 
 pub type PFN_vkVoidFunction = extern "system" fn() -> ();
 
@@ -2720,6 +2742,50 @@ pub struct DebugMarkerMarkerInfoEXT {
     pub color: [f32; 4],
 }
 
+#[repr(C)]
+pub struct DebugUtilsMessengerCallbackDataEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub flags: DebugUtilsMessengerCallbackDataFlagsEXT,
+    pub pMessageIdName: *const c_char,
+    pub messageIdNumber: i32,
+    pub pMessage: *const c_char,
+    pub queueLabelCount: u32,
+    pub pQueueLabels: *mut DebugUtilsLabelEXT,
+    pub cmdBufLabelCount: u32,
+    pub pCmdBufLabels: *mut DebugUtilsLabelEXT,
+    pub objectCount: u32,
+    pub pObjects: *mut DebugUtilsObjectNameInfoEXT,
+}
+
+#[repr(C)]
+pub struct DebugUtilsLabelEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub pLabelName: *const c_char,
+    pub color: [f32; 4],
+}
+
+#[repr(C)]
+pub struct DebugUtilsObjectNameInfoEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub objectType: ObjectType,
+    pub objectHandle: u64,
+    pub pObjectName: *const c_char,
+}
+
+#[repr(C)]
+pub struct DebugUtilsMessengerCreateInfoEXT {
+    pub sType: StructureType,
+    pub pNext: *const c_void,
+    pub flags: DebugUtilsMessengerCreateFlagsEXT,
+    pub messageSeverity: DebugUtilsMessageSeverityFlagBitsEXT,
+    pub messageType: DebugUtilsMessageTypeFlagBitsEXT,
+    pub pfnUserCallback: PFN_vkDebugUtilsMessengerCallbackEXT,
+    pub pUserData: *mut c_void,
+}
+
 macro_rules! ptrs {
     ($struct_name:ident, { $($name:ident => ($($param_n:ident: $param_ty:ty),*) -> $ret:ty,)+ }) => (
         pub struct $struct_name {
@@ -2831,6 +2897,8 @@ ptrs!(InstancePointers, {
     GetPhysicalDeviceQueueFamilyProperties2KHR => (physicalDevice: PhysicalDevice, pQueueFamilyPropertiesCount: *mut u32, pQueueFamilyProperties: *mut QueueFamilyProperties2KHR) -> (),
     GetPhysicalDeviceMemoryProperties2KHR => (physicalDevice: PhysicalDevice, pMemoryProperties: *mut PhysicalDeviceMemoryProperties2KHR) -> (),
     GetPhysicalDeviceSparseImageFormatProperties2KHR => (physicalDevice: PhysicalDevice, pFormatInfo: *const PhysicalDeviceSparseImageFormatInfo2KHR, pPropertyCount: *mut u32, pProperties: *mut SparseImageFormatProperties2KHR) -> (),
+    CreateDebugUtilsMessengerEXT => (instance: Instance, pCreateInfo: *const DebugUtilsMessengerCreateInfoEXT, pAllocator: *const AllocationCallbacks, pMessenger: *mut DebugUtilsMessengerEXT) -> Result,
+    DestroyDebugUtilsMessengerEXT => (instance: Instance, messenger: DebugUtilsMessengerEXT, pAllocator: *const AllocationCallbacks) -> (),
 });
 
 ptrs!(DevicePointers, {
